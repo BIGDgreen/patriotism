@@ -1,0 +1,229 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+
+.login{
+  margin: 0 auto;
+  width: 95%;
+  overflow: hidden;
+}
+
+.loginWrapper{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: .6em auto 0 auto;
+}
+/*********登陆信息************/
+.inputItem{
+  width: 100%;
+  height: 2.4em;
+  margin-top: 10px;
+  padding-left: 10px;
+  font-size: .5em;
+  color: #444444;
+  border: none;
+  outline: none;
+  background-color: #eeeeee;
+}
+
+.inputItem{
+  padding-left: 10px;
+}
+
+.passwordWrapper{
+  display: flex;
+  flex-direction: row;
+}
+
+.pwTextWrapper{
+  width: 100%;
+  flex-grow: 1;
+}
+
+.viewPassword{
+  border: 0;
+  background: #eeeeee;
+  margin-top: 10px;
+  outline: none;
+}
+
+#viewPwdIcon{
+  font-size: 1.4em;
+  height: 2.4em;
+  padding-right: .8em;
+  padding-left: .4em;
+  color: #cccccc;
+  border: none;
+  background-color: #eeeeee;
+  outline: none;
+}
+
+/**********************登录按钮****************/
+.login_btn{
+  margin-top: 20px;
+}
+/********************手机登录&忘记密码******************/
+.footer{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.footerItem{
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: .8em;
+  font-size: .38em;
+  text-decoration: none;
+  color: black;
+}
+.footerItem:hover{
+  color: #3b86ff;
+  text-decoration: underline;
+}
+
+/*********************第三方登录******************/
+.otherLoginWays{
+  width: 95%;
+  margin: 0 auto;
+  text-align: center;
+  position: fixed;
+  bottom: .8em;
+}
+
+.otherWayTextWrapper{
+  line-height: 0px;
+}
+.otherWayTextWrapper:before,.otherWayTextWrapper:after{
+  position: absolute;
+  background: #ddd;
+  content: "";
+  height: 1px;
+  width: 32%;
+}
+.otherWayTextWrapper:before{
+  left: 0;
+}
+.otherWayTextWrapper:after{
+  right: 0;
+}
+
+.otherWayText{
+  font-size: .4em;
+  color: #bbbbbb;
+}
+
+.icons{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-top: .4em;
+}
+
+.iconfont{
+  cursor: pointer;
+}
+
+.weixinIcon{
+  font-size: 1em;
+  color: #50B674;
+}
+
+.qqIcon{
+  font-size: 1em;
+  color: #68A5E1;
+}
+
+.weiboIcon{
+  font-size: 1em;
+  color: #EA5D5C;
+}
+/************************** <= 340px 手机************************************/
+@media (max-width: 340px){
+  .login{
+    font-size: 28px;
+  }
+  .cover{
+    display: none;
+  }
+}
+/************************** 340px ~ 820px 手机************************************/
+@media (min-width: 340px){
+  .login{
+    font-size: 32px;
+  }
+}
+/*************************** 820px~992px 平板**************************************/
+@media (min-width: 820px){
+
+  .login{
+    width: 100%;
+    height: 100%;
+    font-size: 26px;
+    background: url("./images/cover.jpg") no-repeat;
+    background-size: cover;
+  }
+
+  /*.cover{*/
+  /*  width: 50%;*/
+  /*}*/
+  /*  .coverImg{*/
+  /*    width: 100%;*/
+  /*  }*/
+
+  .infoWrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 34%;
+    position: fixed;
+    top: 50%;
+    right: -8%;
+    transform: translate(-50%,-50%);
+    /*border: 1px solid #c85764;*/
+    border-radius: .6em;
+    padding: .4em;
+    background: white;
+  }
+
+  .inputItem{
+    font-size: .6em;
+  }
+
+  .login_btn{
+    font-size: .6em;
+  }
+
+  .phoneLogin{
+    display: none;
+  }
+
+  .footerItem{
+    margin-top: .3em;
+  }
+
+  .otherLoginWays{
+    position: relative;
+    margin-top: 1.8em;
+  }
+}
+/* 992px~1365px 桌面显示器*/
+@media screen and (min-width: 992px){
+  .login{
+    font-size: 28px;
+  }
+  .infoWrapper{
+    width: 30%;
+  }
+}
+/*≥ 1365px 大桌面显示器*/
+@media screen and (min-width: 1365px){
+  .login{
+    font-size: 50px;
+  }
+}
