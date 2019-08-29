@@ -98,13 +98,22 @@
             console.log('phone');
             this.axios.post(this.commonUrl+'/api/v1.0/user/login/tel',params)
               .then(function(res){
+                sessionStorage.setItem('token',res.headers.token)
                 console.log(res)
                 //存储登录状态
                 sessionStorage.setItem("isLogin",res.data.authenticated);
                 console.log(sessionStorage.getItem("isLogin"));
 
+                console.log(forIdParams);
                 //发送请求,根据username获取user_id
-                that.axios.post(that.commonUrl+'/api/v1.0/user/user',forIdParams)
+                // that.axios.post(that.commonUrl+'/api/v1.0/user/user',forIdParams)
+                that.axios.post(that.commonUrl+'/api/v1.0/user/user', forIdParams,
+                  {
+                  headers:{
+                    'Authorization':sessionStorage.getItem('token')
+                    }
+                  }
+                )
                   .then((res)=>{
                     console.log(res);
                     sessionStorage.setItem("userId",res.data.data.id);

@@ -1,5 +1,5 @@
 <template>
-  <form class="phoneLoginTemplate">
+  <div class="phoneLoginTemplate">
     <div class="phoneInput">
       <div class="inputItem">
         <div class="areaTag">
@@ -15,7 +15,7 @@
       <button class="myBtn" @click="$emit('toLast')">上一步</button>
       <button class="myBtn" @click="$emit('toNext')">下一步</button>
     </div>
-  </form>
+  </div>
 </template>
 
 <script>

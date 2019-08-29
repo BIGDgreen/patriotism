@@ -59,7 +59,7 @@
     }
     img{
       width: 4.6em;
-      height: 2.8em;
+      height: 3em;
       margin-left: .4em;
       position: relative;
       top:50%;
@@ -75,6 +75,10 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        .list_title{
+          font-size: .82em;
+          width: 78%;
+        }
         .list_type_wrapper{
           display: flex;
           flex-direction: column;

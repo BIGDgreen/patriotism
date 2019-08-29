@@ -82,20 +82,24 @@
   .content {
     /deep/ .getVerify {
       font-size: .56em;
-      .countDownWrapper{
+
+      .countDownWrapper {
         font-size: .7em;
       }
+
       .inputWrapper {
         .input-box {
           input {
             top: 24%;
           }
+
           // 六个span的样式
           .spanWrapper {
             top: 25%;
           }
         }
       }
+
     }
   }
 </style>

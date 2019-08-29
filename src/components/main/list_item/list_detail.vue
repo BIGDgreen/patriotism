@@ -10,11 +10,9 @@
           <div class="article_content">
             <div class="article_info">
               <div class="article_author">{{article_author}}</div>
-              <div class="article_time">{{article_time}}</div>
+              <div class="article_time">{{article_time | formatDate}}</div>
             </div>
-            <div class="article_text">
-              {{article_text}}
-            </div>
+            <div class="article_text" v-html="article_text"></div>
           </div>
         </div>
       </div>
@@ -138,16 +136,26 @@
         console.log(article_height);
         let that = this;
         let id = sessionStorage.getItem("listId");
-        this.axios.get(this.mainUrl + `/api/v1/data/info/${id}`)
+        this.axios.get(this.mainUrl + `/api/v1/data/info/${id}`,{
+          headers:{
+          'Authorization':sessionStorage.getItem('token')
+          }
+        })
           .then((res) => {
             console.log(res)
             this.real_id = res.data.data.actual_id;
             this.type = res.data.data.type_str;
             if (this.type === "文章") {
               //获取详细信息
-              this.axios.get(this.mainUrl + `/api/v1/data/article/info/${that.real_id}`)
+              this.axios.get(this.mainUrl + `/api/v1/data/article/info/${that.real_id}`,
+                {
+                  headers:{
+                    'Authorization':sessionStorage.getItem('token')
+                  }
+                }
+              )
                 .then((response) => {
-                  console.log(response)
+                  console.log(response);
                   this.article_text = response.data.article_content;
                   this.article_img = response.data.article_image;
                   this.article_title = response.data.article_title;
@@ -158,9 +166,14 @@
               })
             } else if (this.type === "视频") {
               //获取视频详细信息
-              this.axios.get(this.mainUrl + `/api/v1/data/video/info/${that.real_id}`)
+              this.axios.get(this.mainUrl + `/api/v1/data/video/info/${that.real_id}`,
+                {
+                  headers:{
+                    'Authorization':sessionStorage.getItem('token')
+                  }
+                })
                 .then((response) => {
-                  console.log(response)
+                  console.log(response);
                   this.video_title = response.data.video_title;
                   this.video_author = response.data.video_author;
                   this.video_time = response.data.video_upload_time;
@@ -175,13 +188,17 @@
             this.axios.get(this.mainUrl + `/api/v1/data/info/${id}/comment`, {
               params: {
                 'user_id': sessionStorage.getItem("userId")
+              },
+              headers:{
+                'Authorization':sessionStorage.getItem('token')
               }
             })
               .then((response) => {
                 console.log(response);
                 if (response.data.status === "success") {
                   that.comments = response.data.data;
-                  for (let i = 0; i < response.data.data.length; i++) {
+                  let comment_length = response.data.data.length || 0;
+                  for (let i = 0; i < comment_length; i++) {
                     that.comment_id[i] = response.data.data[i].id;
                     that.liked[i] = response.data.data[i].like;
                   }
@@ -226,7 +243,12 @@
             console.log(sessionStorage.getItem("userId"));
             params.append('like_num', 0);
 
-            that.axios.post(this.mainUrl + `/api/v1/data/info/${id}/comment`, params)
+            that.axios.post(this.mainUrl + `/api/v1/data/info/${id}/comment`, params,
+              {
+                headers:{
+                  'Authorization':sessionStorage.getItem('token')
+                }
+              })
               .then((response) => {
                 console.log(response);
                 if (response.data.status === "success") {
@@ -251,7 +273,12 @@
             let params = new URLSearchParams();
             params.append('_method', 'PUT');
             params.append('user_id', sessionStorage.getItem('userId'));
-            this.axios.post(this.mainUrl + `/api/v1/data/info/${id}/comment/${that.comment_id[index]}`, params)
+            this.axios.post(this.mainUrl + `/api/v1/data/info/${id}/comment/${that.comment_id[index]}`, params,
+              {
+                headers:{
+                  'Authorization':sessionStorage.getItem('token')
+                }
+              })
               .then((response) => {
                 console.log(response);
                 if (response.data.status === "success") {
@@ -269,7 +296,12 @@
             let params = new URLSearchParams();
             params.append('_method', 'PUT');
             params.append('user_id', sessionStorage.getItem('userId'));
-            this.axios.post(this.mainUrl + `/api/v1/data/info/${id}/comment/${that.comment_id[index]}`, params)
+            this.axios.post(this.mainUrl + `/api/v1/data/info/${id}/comment/${that.comment_id[index]}`, params,
+              {
+                headers:{
+                  'Authorization':sessionStorage.getItem('token')
+                }
+              })
               .then((response) => {
                 console.log(response);
                 if (response.data.status === "success") {
@@ -285,19 +317,6 @@
             })
           }
         }
-        // optLike() {
-        //   if (this.mainLiked) {
-        //     $("#likeIcon").css("color", "#999999");
-        //     $("#likeNum").css("color", "#999999");
-        //     this.mainLiked = false;
-        //     this.main_like_num--;
-        //   } else {
-        //     $("#likeIcon").css("color", "#EA5D5C");
-        //     $("#likeNum").css("color", "#EA5D5C");
-        //     this.mainLiked = true;
-        //     this.main_like_num++;
-        //   }
-        // },
       }
     }
 </script>
@@ -345,19 +364,17 @@
         background: white;
           .article_title {
             width: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            color: black;
+            font-weight: bold;
             font-size: 1.2em;
             padding: .2em .7em;
-            position: absolute;
-            top: @imgHeight - 3.52em;
-            color: white;
           }
 
           .article_content {
             width: 90%;
             display: flex;
             flex-direction: column;
-            margin: 0 auto;
+            margin: .62em auto;
 
             .article_info {
               display: flex;

@@ -39,8 +39,9 @@
             let params = new URLSearchParams();
             params.append('tel',phone);
             params.append('action','register');
-            this.axios.post(this.commonUrl+'/api/v1.0/sys/sms/send',params)
+            that.axios.post(that.commonUrl+'/api/v1.0/sys/sms/send',params)
               .then(function (res) {
+                console.log(res);
                 if(res.data.status==='success'){
                   that.$router.push({path:`/register/SMS/SMS_verify/${phone}`});
                 }else{

@@ -264,6 +264,12 @@
     }
   }
 
+  @media(min-height: 700px){
+    .noCodeWrapper{
+      margin-top: 2em;
+    }
+  }
+
   .phoneLoginBtn{
     display: flex;
     flex-direction: row;
