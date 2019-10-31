@@ -95,11 +95,11 @@
           forIdParams.append('username',username);
 
           if(password !== "" && username !== "" && realPhone.test(username)){
-            console.log('phone');
+            // console.log('phone');
             this.axios.post(this.commonUrl+'/api/v1.0/user/login/tel',params)
               .then(function(res){
-                sessionStorage.setItem('token',res.headers.token)
-                console.log(res)
+                sessionStorage.setItem('token',res.headers.token);
+                // console.log(res)
                 //存储登录状态
                 sessionStorage.setItem("isLogin",res.data.authenticated);
                 console.log(sessionStorage.getItem("isLogin"));
@@ -115,30 +115,25 @@
                   }
                 )
                   .then((res)=>{
-                    console.log(res);
+                    // console.log(res);
                     sessionStorage.setItem("userId",res.data.data.id);
                     console.log(sessionStorage.getItem("userId"));
                   })
                   .catch((err)=>{
                     console.log(err);
-                  })
-                // sessionStorage.setItem("userToken",res.data)
-                // this.$store.dispatch("setUser" ,res.data.principal.username)
-                // this.$store.dispatch("setToken",res.data)
-                // console.log(this.$store.state.isLogin)
-                that.$layer.alert('登录成功');
+                  });
                 setTimeout(()=>{
                   that.$router.push({path:'/main'})
                 },3000);
               })
               .catch(function(err){
-                that.$layer.alert('用户名或密码错误');
+                that.$layer.alert('网络连接错误');
               });
           }if(password!=="" && username!=="" && realEmail.test(username)){
-            console.log('email')
+            // console.log('email');
             that.axios.post(this.commonUrl+'/api/v1.0/user/login/tel',params)
               .then((res)=>{
-                console.log(res)
+                console.log(res);
                 forIdParams.append('username',res.data.principal.username);
                 this.axios.post(this.commonUrl+'/api/v1.0/user/user',forIdParams)
                   .then((res)=>{
@@ -146,8 +141,8 @@
                     // sessionStorage.setItem("userId",res.data.principal.user_id);
                   })
                   .catch((err)=>{
-                    console.log(err);
-                  })
+                    console.error(err);
+                  });
                 that.$layer.alert('登录成功');
                 setTimeout(()=>{ this.$router.push({path:'/main'})},2000);
               })

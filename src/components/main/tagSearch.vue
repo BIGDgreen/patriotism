@@ -34,12 +34,32 @@
       data(){
         return{
           selected:[false],
-          tags:['爱国','红色','时事','外交','革命','网红','会议','立法'],
-          selectedTags:[]
+          tags:[],
+          selectedTags:[],
+          tagsCode:[],
+          selectedCode:[]
         };
       },
       components:{
         tag
+      },
+      mounted() {
+        // 获取标签
+        this.axios.get(this.mainUrl+"/api/v1/data/tags",{
+          headers:{
+            'Authorization':sessionStorage.getItem('login_token')
+          }
+        })
+          .then((response)=> {
+            // console.log("标签列表",response);
+            response.data.data.map((res) => {
+              this.tags.push(res.str);
+              this.tagsCode.push(res.code);
+            });
+          })
+          .catch((err)=> {
+            console.info(err);
+          })
       },
       methods:{
         returnMain(){
@@ -59,16 +79,17 @@
             }
             else if ( k > 1) {
               that.selectedTags.push(that.tags[k-2]);
+              that.selectedCode.push(that.tagsCode[k-2]);
             }
           }else{
             $("#tag"+k).css("color","#EA5D5C");
             $("#tag"+k).css("background-color","white");
             that.selected[k] = false;
-            if (k === 0){
+            if ( k === 0 ){
               // that.selectedTags = that.selectedTags.replace("文章","");
               that.selectedTags.pop("文章");
             }
-            if (k === 1){
+            if ( k === 1 ){
               // that.selectedTags =  that.selectedTags.replace("视频","");
               that.selectedTags.pop("视频");
             }
@@ -80,10 +101,13 @@
         },
         finish(){
           let that = this;
+          // console.log(this.selectedTags);
+          // console.log(this.selectedCode);
           this.$router.push({
             name:"mainPage",
             params:{
-            selectedTags:that.selectedTags
+              selectedTags:that.selectedTags,
+              selectedCode: that.selectedCode
             }
           })
         }

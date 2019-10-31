@@ -1,6 +1,6 @@
 <template>
   <div class="mainPage">
-    <div v-if="isLogin" id="loginedPage">
+    <div id="loginedPage">
     <!------------------------------------------- 搜索栏 ------------------------------------------------->
       <div class="search_wrapper">
         <span class="title">爱之国</span>
@@ -26,22 +26,44 @@
           </div>
           <!----------------------------------------- 列表 --------------------------------------------------->
           <div class="lists" v-for="(list,index) in dataList" :key="index">
-            <listItem :img_src="list.image"
-                      :list_title="list.title"
-                      :list_type="list.type_str"
-                      :list_tags="list.tags"
-                      :list_author="list.author"
-                      :list_time="list.upload_time | formatDate"
-                      v-on:toDetail="forMore(index)">
-            </listItem>
+            <div v-if="listType === 'all'">
+              <listItem :img_src="list.image"
+                        :list_title="list.title"
+                        :list_type="list.type_str"
+                        :list_tags="list.tags"
+                        :list_author="list.author"
+                        :list_time="list.upload_time | formatDate"
+                        v-on:toDetail="forMore(index)">
+              </listItem>
+            </div>
+            <div v-if="listType === 'article'">
+              <listItem :img_src="list.article_image"
+                        :list_title="list.article_title"
+                        list_type="文章"
+                        :list_tags="list.article_tags"
+                        :list_author="list.article_author"
+                        :list_time="list.article_upload_time | formatDate"
+                        v-on:toDetail="forMore(index)">
+              </listItem>
+            </div>
+            <div v-if="listType === 'video'">
+              <listItem :img_src="list.video_image"
+                        :list_title="list.video_title"
+                        list_type="视频"
+                        :list_tags="list.video_tags"
+                        :list_author="list.video_author"
+                        :list_time="list.video_upload_time | formatDate"
+                        v-on:toDetail="forMore(index)">
+              </listItem>
+            </div>
           </div>
         </div>
       </mescroll-vue>
     </div>
-    <div v-else-if="!isLogin" class="noLoginWrapper">
-      还未登录/注册，请先
-      <router-link to="/">登录/注册</router-link>
-    </div>
+<!--    <div v-else-if="!isLogin" class="noLoginWrapper">-->
+<!--      还未登录/注册，请先-->
+<!--      <router-link to="/">登录/注册</router-link>-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -71,6 +93,7 @@
     updated(){
       if(this.$route.params.selectedTags){
         let tags = this.$route.params.selectedTags;
+        // console.info("tags",tags);
         $('.list_item').each(function () {
           for (let i = 0 ; i < tags.length ; i++){
             if (tags.indexOf("文章") > -1 && tags.indexOf("视频") <= -1 ){
@@ -92,6 +115,7 @@
     },
     data() {
       return {
+        listType:"all",
         listId:[],
         mescroll: null, // mescroll实例对象
         mescrollDown:{},
@@ -135,12 +159,22 @@
     mounted() {
       //获取幻灯片
       let that = this;
-      this.axios.get(this.mainUrl+"/api/v1/static/slideShow").then((response)=>{
+      this.axios
+        .get(this.mainUrl+"/api/v1/static/slideShow")
+        .then((response)=>{
         let data_lists = response.data.data;
         for(let i = 0; i < data_lists.length; i++){
           that.slideItems.push(data_lists[i].url) ;
         }
       })
+        .catch((err) => {
+          console.log(err.response);
+          if (err.response.status === 403) {
+            location.href = err.response.data.data.url;
+          } else {
+            console.error("轮播图",err);
+          }
+        })
     },
     methods: {
       // mescroll组件初始化的回调,可获取到mescroll对象
@@ -151,36 +185,69 @@
       // 上拉回调 page = {num:1, size:10}; num:当前页 ,默认从1开始; size:每页数据条数,默认10
       upCallback(page, mescroll) {
         let that = this;
-        this.axios.get(this.mainUrl+"/api/v1/data/lists",{
+        let selectedCode = "";
+        if (this.$route.params.selectedCode) {
+          selectedCode = this.$route.params.selectedCode.join("-");
+        }
+        // console.log("selectedCode",selectedCode);
+        let tags = this.$route.params.selectedTags;
+        let type = "";
+        if ( tags ) {
+          if (tags.indexOf("文章") > -1 && tags.indexOf("视频") === -1) {
+            type = "article/";
+            that.listType = "article";
+          } else if (tags.indexOf("视频") > -1 && tags.indexOf("文章") === -1) {
+            type = "video/";
+            that.listType = "video";
+          } else {
+            type = "";
+            that.listType = "all";
+          }
+        }
+        this.axios.get(this.mainUrl+"/api/v1/data/"+type+"lists",{
           params: {
-            page: page.num, //页码
-            size: page.size //每页长度
+            page: page.num, // 页码
+            size: page.size, // 每页长度
+            tags: selectedCode    // 有标签则根据标签显示，没有标签则显示全部
           },
           headers:{
-            'Authorization':sessionStorage.getItem('token')
+            'Authorization':sessionStorage.getItem('login_token')
           }
         })
           .then((response)=> {
-            console.log(response);
-            let data_lists = response.data.data.data_lists;
+            // console.log("列表",response);
+            let data_lists = [];
+            if (response.data.data.type_str === "文章") {
+              data_lists = response.data.data.article_lists;
+            } else if (response.data.data.type_str === "视频") {
+              data_lists = response.data.data.video_lists;
+            } else {
+              data_lists = response.data.data.data_lists;
+            }
             for(let i = 0; i < data_lists.length; i++){
               that.listId[i] = data_lists[i].id;
             }
             if (response.status === 200){
               let data = page.num === 1 ? [] : that.dataList;
-              data.push(...response.data.data.data_lists);
+              data.push(...data_lists);
               that.dataList = data;
               // 数据渲染成功后,隐藏下拉刷新的状态
               this.$nextTick(() => {
-                mescroll.endSuccess(response.data.data.data_lists.length);
+                mescroll.endSuccess(data_lists.length);
               });
             } else {
-              console.log("err");
+              console.error("err");
               mescroll.endErr()
             }
           }).catch((err)=> {
+              if (err.response.status === 403) {
+                location.href = err.response.data.data.url;
+              } else {
+                console.error("列表",err);
+              }
+            mescroll.endErr();
           //联网失败的回调,隐藏下拉刷新和上拉加载的状态;
-          errorCallback&&errorCallback();
+          // errorCallback && errorCallback();
         })
       },
 

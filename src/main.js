@@ -3,8 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import Vuex from 'vuex'
-Vue.use(Vuex)
+import store from './store'
 // import FastClick from 'fastclick'
 // FastClick.attach(document.body);
 //引入图标
@@ -33,10 +32,13 @@ Vue.component('V-share',share)
 
 Vue.config.productionTip = false
 
-Vue.prototype.commonUrl = 'http://47.92.198.120:8080'
-// Vue.prototype.commonUrl = 'http://10.111.210.229:8080'
-Vue.prototype.mainUrl = 'http://47.92.198.120:8080'
-// Vue.prototype.mainUrl = 'http://10.111.210.229:8080'
+// Vue.prototype.commonUrl = 'http://10.111.144.242:8080'; // SUST
+// Vue.prototype.mainUrl = 'http://10.111.144.242:8080';
+// Vue.prototype.mainUrl = 'http://192.168.0.109:8080' // 2A311
+// Vue.prototype.commonUrl = 'http://192.168.0.109:8080'
+Vue.prototype.commonUrl = 'http://patriotiosm.duizhankeji.com:8181'; // 服务器
+Vue.prototype.mainUrl = 'http://patriotiosm.duizhankeji.com:8181';
+
 //时间戳解码
 Vue.filter('formatDate',function (value) {
     let date = new Date(value);
@@ -58,6 +60,7 @@ Vue.filter('formatDate',function (value) {
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

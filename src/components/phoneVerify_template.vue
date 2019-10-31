@@ -12,7 +12,7 @@
     </div>
     <!---------------------------------重新获取验证码---------------------------------->
     <div class="newCodeWrapper" v-if="timeOut">
-      <button class="newCodeBtn" @click="getNewCode(method)">重新获取验证码</button>
+      <button class="newCodeBtn" @click="$emit('getNewCode')">重新获取验证码</button>
     </div>
     <!------------------------------------验证码-------------------------------------->
     <div class="inputWrapper">
@@ -98,30 +98,6 @@
           })
         }
       },
-      getNewCode(myMethod){
-        //重新发送验证码
-        let that = this;
-        let params = new URLSearchParams();
-        console.log(this.phoneNum)
-        params.append('tel',this.$route.params.phone);
-        params.append('action',myMethod);
-        console.log(params);
-        this.axios.post(this.commonUrl+'/api/v1.0/sys/sms/send',params)
-          .then(function (res) {
-            if(res.data.status==='success'){
-              that.timeOut = false;
-              that.countDownTime = 60;
-              that.countDown();
-            }else{
-              console.log(res.data.data.errorMsg);
-              // alert(res.data.data.errorMsg);
-            }
-            console.log(res);
-          })
-          .catch(function (err) {
-            console.log(err);
-          })
-      },
       /*****************************弹出框**********************************/
       showLayer(){
         let _this = this;
@@ -187,7 +163,7 @@
   }
 
   /***********************************验证码输入框*************************/
-  @top:18%;
+  @top:15%;
   .inputWrapper {
     .input-box {
       min-height: 4em;
@@ -225,7 +201,6 @@
         /*label {*/
         /*  padding: 20px;*/
         /*}*/
-
         span {
           border: 1px solid silver;
           display: inline-block;
@@ -233,7 +208,6 @@
           width: 2.3em;
           text-align: center;
           line-height: 2em;
-
           &.highlight {
             border-color: @mainColor;
           }

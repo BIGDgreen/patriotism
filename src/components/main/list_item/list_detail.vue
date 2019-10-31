@@ -108,7 +108,6 @@
               },
               //在用户点击分享按钮后执行代码，cmd为分享目标id。可用于统计等
               onAfterClick: function (cmd) {
-
               }
             },
             share: [{
@@ -132,17 +131,15 @@
         window._bd_share_main = ""
       },
       mounted() {
-        let article_height = $("#article_detail").height();
-        console.log(article_height);
         let that = this;
         let id = sessionStorage.getItem("listId");
         this.axios.get(this.mainUrl + `/api/v1/data/info/${id}`,{
           headers:{
-          'Authorization':sessionStorage.getItem('token')
+          'Authorization':sessionStorage.getItem('login_token')
           }
         })
           .then((res) => {
-            console.log(res)
+            console.log("类型",res)
             this.real_id = res.data.data.actual_id;
             this.type = res.data.data.type_str;
             if (this.type === "文章") {
@@ -150,81 +147,83 @@
               this.axios.get(this.mainUrl + `/api/v1/data/article/info/${that.real_id}`,
                 {
                   headers:{
-                    'Authorization':sessionStorage.getItem('token')
+                    'Authorization':sessionStorage.getItem('login_token')
                   }
                 }
               )
                 .then((response) => {
-                  console.log(response);
+                  console.log("文章",response);
                   this.article_text = response.data.article_content;
                   this.article_img = response.data.article_image;
                   this.article_title = response.data.article_title;
                   this.article_author = response.data.article_author;
                   this.article_time = response.data.article_upload_time;
                 }).catch((error) => {
-                console.log(error)
+                console.log("文章",error)
               })
             } else if (this.type === "视频") {
               //获取视频详细信息
               this.axios.get(this.mainUrl + `/api/v1/data/video/info/${that.real_id}`,
                 {
                   headers:{
-                    'Authorization':sessionStorage.getItem('token')
+                    'Authorization':sessionStorage.getItem('login_token')
                   }
                 })
                 .then((response) => {
-                  console.log(response);
+                  console.log("视频",response);
                   this.video_title = response.data.video_title;
                   this.video_author = response.data.video_author;
                   this.video_time = response.data.video_upload_time;
                   this.video_src = response.data.video_url;
                 }).catch((error) => {
-                console.log(error)
+                console.log("视频",error)
               })
             }
             //获取评论
-            let params = new URLSearchParams();
-            params.append("user_id", sessionStorage.getItem("userId"));
             this.axios.get(this.mainUrl + `/api/v1/data/info/${id}/comment`, {
               params: {
-                'user_id': sessionStorage.getItem("userId")
+                'user_id': sessionStorage.getItem("user_id")
               },
               headers:{
-                'Authorization':sessionStorage.getItem('token')
+                'Authorization':sessionStorage.getItem('login_token')
               }
             })
               .then((response) => {
-                console.log(response);
+                console.log("comments",response);
                 if (response.data.status === "success") {
                   that.comments = response.data.data;
-                  let comment_length = response.data.data.length || 0;
-                  for (let i = 0; i < comment_length; i++) {
-                    that.comment_id[i] = response.data.data[i].id;
-                    that.liked[i] = response.data.data[i].like;
+                  if (that.comments) {
+                    let comment_length = response.data.data.length;
+                    for (let i = 0; i < comment_length; i++) {
+                      that.comment_id[i] = response.data.data[i].id;
+                      that.liked[i] = response.data.data[i].like;
+                    }
                   }
                 } else {
-                  that.$layer.alert(response.data.data.errMSg);
+                  that.$layer.alert(response.data.data.errorMsg);
                 }
               }).catch((error) => {
-              console.log(error)
+              console.log("comments",error)
             });
           })
           .catch((err) => {
-            console.log(err);
+            console.log("类型",err);
           })
       },
       updated() {
-        for (let i = 0; i < this.comments.length; i++) {
-          if (this.liked[i] === 1) {
-            $("#like" + i).css("color", "#EA5D5C");
-          } else {
-            $("#like" + i).css("color", "#999999");
+        if (this.comments) {
+          for (let i = 0; i < this.comments.length; i++) {
+            if (this.liked[i] === 1) {
+              $("#like" + i).css("color", "#EA5D5C");
+            } else {
+              $("#like" + i).css("color", "#999999");
+            }
           }
         }
       },
       methods: {
         goBack() {
-          this.$router.push({path: '/main'});
+          this.$router.push({path: '/'});
         },
         showCustomPopupClick() {
           this.$refs.CustomPopupRef.showCustom();
@@ -239,18 +238,17 @@
 
             let params = new URLSearchParams();
             params.append('comment_content', comment_content);
-            params.append('user_id', sessionStorage.getItem("userId"));
-            console.log(sessionStorage.getItem("userId"));
+            params.append('user_id', sessionStorage.getItem("user_id"));
+            // console.log(sessionStorage.getItem("userId"));
             params.append('like_num', 0);
-
             that.axios.post(this.mainUrl + `/api/v1/data/info/${id}/comment`, params,
               {
                 headers:{
-                  'Authorization':sessionStorage.getItem('token')
+                  'Authorization':sessionStorage.getItem('login_token')
                 }
               })
               .then((response) => {
-                console.log(response);
+                // console.log(response);
                 if (response.data.status === "success") {
                   $("#commentInput").val("");
                   //刷新当前页面
@@ -272,15 +270,15 @@
             //取消点赞
             let params = new URLSearchParams();
             params.append('_method', 'PUT');
-            params.append('user_id', sessionStorage.getItem('userId'));
+            params.append('user_id', sessionStorage.getItem('user_id'));
             this.axios.post(this.mainUrl + `/api/v1/data/info/${id}/comment/${that.comment_id[index]}`, params,
               {
                 headers:{
-                  'Authorization':sessionStorage.getItem('token')
+                  'Authorization':sessionStorage.getItem('login_token')
                 }
               })
               .then((response) => {
-                console.log(response);
+                // console.log(response);
                 if (response.data.status === "success") {
                   $("#like" + index).css("color", "#999999");
                   that.comments[index].like_num--;
@@ -295,17 +293,17 @@
             //点赞
             let params = new URLSearchParams();
             params.append('_method', 'PUT');
-            params.append('user_id', sessionStorage.getItem('userId'));
+            params.append('user_id', sessionStorage.getItem('user_id'));
             this.axios.post(this.mainUrl + `/api/v1/data/info/${id}/comment/${that.comment_id[index]}`, params,
               {
                 headers:{
-                  'Authorization':sessionStorage.getItem('token')
+                  'Authorization':sessionStorage.getItem('login_token')
                 }
               })
               .then((response) => {
-                console.log(response);
+                // console.log(response);
                 if (response.data.status === "success") {
-                  console.log("#like" + index)
+                  console.log("#like" + index);
                   $("#like" + index).css("color", "#EA5D5C");
                   that.comments[index].like_num++;
                   that.liked[index] = 1;
@@ -429,7 +427,7 @@
     /**************************************评论*************************************************/
     .common_comment{
       padding: .4em .8em;
-      margin-bottom: 10%;
+      margin-bottom: 33%;
       background: white;
       .comment_title{
         font-weight: bold;

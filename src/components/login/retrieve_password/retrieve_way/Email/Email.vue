@@ -41,13 +41,13 @@
           params.append('action','register');
           this.axios.post(this.commonUrl+'/api/v1.0/sys/email/send',params)
             .then(function (res) {
+              // console.log(res);
               if(res.data.status==='success'){
                 that.$router.push({path:`/retrievePwd/Email/findPwd/${email}`})
               }else{
                 that.errMsg="err："+res.data.data.errorMsg;
                 $("#errMSg").css('display','block')
               }
-              console.log(res);
             })
             .catch(function (err) {
               console.log(err);

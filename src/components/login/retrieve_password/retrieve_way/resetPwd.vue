@@ -1,7 +1,7 @@
 <template>
     <div class="resetPwd">
       <div class="head"><step></step></div>
-      <form>
+      <div>
         <div class="input_wrapper">
           <div class="newPwd">
             <div class="tag">重置密码：</div>
@@ -14,7 +14,7 @@
         </div>
         <div id="warn">两次密码输入不一致!</div>
         <button class="myBtn" @click="finish()">完成</button>
-      </form>
+      </div>
     </div>
 </template>
 
@@ -29,10 +29,24 @@
         finish(){
           let firstVaule = $('#firstPwd').val();
           let secondVaule = $('#secondPwd').val();
-          if(firstVaule!=secondVaule){
+          if(firstVaule!==secondVaule){
             $('#warn').css('display','block');
-          }else {
-            this.$router.push({path: '/'});
+          } else {
+            console.log("tel",this.$route.params.tel);
+            // alert("11");
+            // 发送请求
+            let params = new URLSearchParams();
+            params.append('password',secondVaule);
+            params.append('sms_key',sessionStorage.getItem('sms_key'));
+            params.append('tel',this.$route.params.tel);
+            this.axios.post(this.commonUrl+'/api/v1.0/user/resetPassword',params)
+              .then((res) => {
+                // console.log(res);
+                this.$router.push({path: '/'});
+              })
+              .catch((err) => {
+                console.log(err);
+              })
           }
         }
       }

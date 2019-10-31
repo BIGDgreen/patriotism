@@ -1,7 +1,7 @@
 <template>
     <div class="comment_item">
       <div class="comment_head">
-        <img class="userAvatar" :src="userAvatarSrc" alt="userAvatar"
+        <img class="userAvatar" :src="userAvatarSrc" alt="头像"
              style="height: 8%;width: 8%;border-radius: 50%">
         <div class="userName">{{userName}}</div>
       </div>

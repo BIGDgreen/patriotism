@@ -36,13 +36,13 @@
             params.append('action','register');
             this.axios.post(this.commonUrl+'/api/v1.0/sys/sms/send',params)
               .then(function (res) {
+                console.log(res);
                 if(res.data.status==='success'){
                   that.$router.push({path:`/retrievePwd/SMS/findPwd/${phone}`});
                 }else{
                   that.errorMsg="err："+res.data.data.errorMsg;
                   $("#tip2").css('display','block');
                 }
-                console.log(res);
               })
               .catch(function (err) {
                 console.log(err);
@@ -67,6 +67,33 @@
   }
 
   .phoneItem_wrapper{
+    /deep/ .getVerify {
+      font-size: .56em;
+      .countDownWrapper{
+        font-size: .7em;
+      }
+      .inputWrapper {
+        .input-box {
+          input {
+            top: 24%;
+          }
+          @media (min-width: 360px){
+            input {
+              top: 21%;
+            };
+          }
+          // 六个span的样式
+          .spanWrapper {
+            top: 25%;
+          }
+          @media (min-width: 360px){
+            .spanWrapper {
+              top: 21%;
+            };
+          }
+        }
+      }
+    }
     /deep/ .phoneLoginTemplate{
       font-size: 1em;
     }
