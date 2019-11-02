@@ -63,7 +63,7 @@
       },
       methods:{
         returnMain(){
-          this.$router.push({path:"/main"})
+          this.$router.push({path:"/"})
         },
         selectTag(k){
           let that = this;

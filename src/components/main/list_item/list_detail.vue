@@ -14,7 +14,7 @@
             </div>
             <div class="article_text" v-html="article_text"></div>
           </div>
-        </div>
+        </div>ma
       </div>
 <!-------------------------------------------------视频----------------------------------------------->
       <div class="video_detail" id="video_detail" v-else-if="type==='视频'">

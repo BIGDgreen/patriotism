@@ -135,19 +135,20 @@ export default new Router({
     }
     //详情
     , {
-      path: '/main/listDetail',
+      path: '/listDetail',
       name: 'listDetail',
       component: listDetail
     }
     //标签搜索
     , {
-      path: '/main/tagSearch',
+      path: '/tagSearch',
       name: 'tagSearch',
       component: tagSearch,
       meta: {
         keepAlive: true
       }
     }
+    // 易班登录相关页
     ,{
       path: '/blank',
       name: 'blank',

@@ -215,7 +215,7 @@
           }
         })
           .then((response)=> {
-            // console.log("列表",response);
+            console.log("列表",response);
             let data_lists = [];
             if (response.data.data.type_str === "文章") {
               data_lists = response.data.data.article_lists;
@@ -242,6 +242,7 @@
           }).catch((err)=> {
               if (err.response.status === 403) {
                 location.href = err.response.data.data.url;
+                // location.href = 'http://yiban.sust.edu.cn/yibanapi/?backurl=http://192.168.0.110:8200/blank';
               } else {
                 console.error("列表",err);
               }
@@ -263,10 +264,9 @@
           $(this).toggle(keyword.length < 1 || $(this).data('model').toLowerCase().indexOf(keyword) > -1);
         })
       },
-
-      slide_forMore(index) {
-        this.$router.push({});
-      },
+      // slide_forMore(index) {
+      //   this.$router.push({});
+      // },
       forMore(index) {
         let that = this;
         sessionStorage.setItem("listId",this.listId[index])
@@ -280,7 +280,7 @@
           });
       },
       tagSearch() {
-        this.$router.push({path: "/main/tagSearch"});
+        this.$router.push({path: "/tagSearch"});
       }
     }
   }
